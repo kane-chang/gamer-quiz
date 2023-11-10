@@ -1,6 +1,6 @@
 ## Gamer Quiz!
 
-Test your video game knowledge with this quiz! As a lover of classic games, this quiz will test your knowledge of iconic oldies and goldies while under time pressure. You can add your initials at the end of the quiz to enter your score into the highscore list - good luck!
+Test your video game knowledge with this quiz! As a lover of classic games, I created a quiz about iconic game oldies and goldies which you can attempt while under time pressure. You can add your initials at the end of the quiz to enter your score into the highscore list - good luck!
 
 ## Usage
 
