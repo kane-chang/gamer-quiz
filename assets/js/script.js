@@ -8,6 +8,8 @@ var endScreen = document.querySelector("#end-screen");
 var finalScore = document.querySelector("#final-score");
 var timeEl = document.querySelector('#time');
 var startButton = document.querySelector("#start");
+var submitButton = document.querySelector("#submit")
+var initialsInput = document.querySelector("#initials")
 
 var feedbackDiv = document.querySelector("#feedback")
 var feedbackText = document.createElement("p")
@@ -140,3 +142,26 @@ function displayEndScreen() {
 startButton.addEventListener("click", countdown);
 startButton.addEventListener("click", displayQuestion);
 choicesList.addEventListener("click", answerChecker);
+submitButton.addEventListener("click", submitHighscore)
+
+// TODO function - highscore submit button redirect to highscore.html
+var scores = []
+localStorage.setItem("scores", JSON.stringify(scores))
+
+function submitHighscore() {
+  if (initialsInput.value == "") {
+    alert("Please input your initials.")
+  } else {
+    var newHighscore = `${initialsInput.value} - ${timeLeft}`;
+    var highscores = JSON.parse(localStorage.getItem("scores"));
+    highscores.push(newHighscore);
+    localStorage.setItem("scores", JSON.stringify(highscores));
+    window.location.href = "./highscores.html";
+  }
+  
+
+}
+
+// TODO function - add initials and score to local storage
+
+
