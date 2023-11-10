@@ -37,9 +37,9 @@ var questionNumTracker = 0;
 function displayQuestion() {
   questionTitle.textContent = questionArr[questionNumTracker]; // Set question title
 
-  // while (choicesList.firstChild) {
-  //   choicesList.removeChild(choicesList.firstChild);
-  // }
+  while (choicesList.firstChild) {
+    choicesList.removeChild(choicesList.firstChild);
+  }
 
   for (let j = 0; j < 4; j++) {
     var choiceEl = document.createElement("button");
@@ -53,11 +53,6 @@ function displayQuestion() {
 
   questionDiv.removeAttribute('class:"hide"');
   questionDiv.setAttribute("class", "start");
-
-
-
-  questionNumTracker += 1;
-
 };
 
 
@@ -72,9 +67,9 @@ function displayQuestion() {
 // TODO make a timer that countdowns when start quiz button is clicked
 
 var timeEl = document.getElementById('time')
+var timeLeft = 60;
 
 function countdown() {
-  var timeLeft = 60;
 
   var timeInterval = setInterval(function () {
     timeEl.textContent = timeLeft
@@ -87,17 +82,38 @@ function countdown() {
   }, 1000);
 }
 
-// TODO add questions that display when quiz button is clicked
-var startButton = document.querySelector("#start")
-startButton.addEventListener("click", countdown)
-startButton.addEventListener("click", displayQuestion)
 
+// TODO add questions that display when quiz button is clicked
+var startButton = document.querySelector("#start");
+startButton.addEventListener("click", countdown);
+startButton.addEventListener("click", displayQuestion);
 
 
 // TODO add clickable answers
+choicesList.addEventListener("click", answerChecker);
 
 // TODO function to check correct answer - reduce timer if wrong
+function answerChecker(event) {
+  if (event.target.matches("button")) {
+    selectedAnswer = event.target;
+    console.log(selectedAnswer.textContent);
+    console.log(correctAnswerArr[questionNumTracker]);
+    
+    if (selectedAnswer.textContent == correctAnswerArr[questionNumTracker]) {
+      console.log("yes!");
+    } else {
+      console.log("no!");
+      timeLeft -= 10
+    };
+    questionNumTracker += 1;
+    displayQuestion()
+  } 
+}
 
 // TODO game ends when all questions answered / timer reach 0
+
+// if (timeLeft < 1 | questionNumTracker == questionArr.length - 1) {
+  
+// }
 
 // TODO end screen with score (time left) and input initials
