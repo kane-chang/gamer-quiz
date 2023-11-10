@@ -87,12 +87,12 @@ function answerChecker(event) {
     selectedAnswer = event.target.textContent;  // Stores selected answer 
     console.log(selectedAnswer);
     console.log(correctAnswerArr[questionNumTracker]);
-    
+
     if (selectedAnswer == correctAnswerArr[questionNumTracker]) {  // Checks if selected answer is correct
       correctAudio.play()
       feedbackText.textContent = "Correct!"
       console.log("yes!");
-    } else {  
+    } else {
       incorrectAudio.play()
       feedbackText.textContent = "Wrong!"
       console.log("no!");
@@ -116,9 +116,9 @@ function displayFeedback() {
 
   var feedbackTime = 2;  // Length of time feedback displays
   var feedbackTimeInterval = setInterval(function () {  // Hides feedback div after 2 seconds
-    feedbackTime--; 
-    if (feedbackTime < 1) {  
-      feedbackDiv.removeAttribute('"start"'); 
+    feedbackTime--;
+    if (feedbackTime < 1) {
+      feedbackDiv.removeAttribute('"start"');
       feedbackDiv.setAttribute("class", "feedback hide");
       clearInterval(feedbackTimeInterval);
     };
@@ -144,24 +144,26 @@ startButton.addEventListener("click", displayQuestion);
 choicesList.addEventListener("click", answerChecker);
 submitButton.addEventListener("click", submitHighscore)
 
-// TODO function - highscore submit button redirect to highscore.html
-var scores = []
-localStorage.setItem("scores", JSON.stringify(scores))
 
-function submitHighscore() {
-  if (initialsInput.value == "") {
-    alert("Please input your initials.")
+// TODO function - highscore submit button adds initials and score to local storage, redirects to highscore.html
+if (localStorage.getItem("scores") == null) {  // Checks whether local storage is cleared
+  var scores = []  // adds item to local storage if scores are not found
+  localStorage.setItem("scores", JSON.stringify(scores))  // stores score item to local storage
+}
+
+function submitHighscore() {  
+  if (initialsInput.value == "") {  // Prevents submission without initials
+    alert("Oops, you didn't input your initials! Try again.")
   } else {
-    var newHighscore = `${initialsInput.value} - ${timeLeft}`;
-    var highscores = JSON.parse(localStorage.getItem("scores"));
-    highscores.push(newHighscore);
-    localStorage.setItem("scores", JSON.stringify(highscores));
-    window.location.href = "./highscores.html";
+    var newHighscore = `${initialsInput.value} - ${timeLeft}`;  // Formats highscore submission 
+    var highscores = JSON.parse(localStorage.getItem("scores"));  // Retrieves previous highscores
+    highscores.push(newHighscore);  //  Adds new highscore
+    localStorage.setItem("scores", JSON.stringify(highscores));  // Stores new highscores list
+    window.location.href = "./highscores.html";  // Redirects user to highscores page
   }
-  
+
 
 }
 
-// TODO function - add initials and score to local storage
 
 
