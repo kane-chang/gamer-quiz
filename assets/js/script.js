@@ -1,5 +1,5 @@
 // TODO variables and quiz questions:
-// variables referencing html selectors
+// Created variables referencing html selectors
 var startScreen = document.querySelector("#start-screen");
 var questionDiv = document.querySelector("#questions");
 var questionTitle = document.querySelector("#question-title");
@@ -8,6 +8,13 @@ var endScreen = document.querySelector("#end-screen");
 var finalScore = document.querySelector("#final-score");
 var timeEl = document.querySelector('#time');
 var startButton = document.querySelector("#start");
+
+var feedbackDiv = document.querySelector("#feedback")
+var feedbackText = document.createElement("p")
+feedbackDiv.appendChild(feedbackText)
+
+var correctAudio = new Audio("assets/sfx/correct.wav")
+var incorrectAudio = new Audio("assets/sfx/incorrect.wav")
 
 // quiz questions and answers
 var questionArr = ["What was Mario's original name?",
@@ -33,7 +40,7 @@ var correctAnswerArr = [
   "Thor"
 ];
 
-
+// Variables for quiz functionality
 var questionNumTracker = 0;  // Keeps track of which question number user is currently on
 var timeLeft = 60;  // Total time left, starting from 60 seconds
 
@@ -80,22 +87,41 @@ function answerChecker(event) {
     console.log(correctAnswerArr[questionNumTracker]);
     
     if (selectedAnswer == correctAnswerArr[questionNumTracker]) {  // Checks if selected answer is correct
+      correctAudio.play()
+      feedbackText.textContent = "Correct!"
       console.log("yes!");
     } else {  
+      incorrectAudio.play()
+      feedbackText.textContent = "Wrong!"
       console.log("no!");
       timeLeft -= 10  // Reduces time for wrong answer
     };
 
+    displayFeedback(); // Tells user whether their answer was correct
+
     questionNumTracker += 1;  // Moves tracker to next question
-    if (questionNumTracker >= questionArr.length) {  // Checks for end of quiz
-      console.log("out of questions");
-      displayEndScreen()
-    } else {
-      displayQuestion()
+    if (questionNumTracker < questionArr.length) {  // Checks for end of quiz
+      displayQuestion();
     };
-  } 
+  };
 };
 
+
+// TODO function - display feedback for a few seconds
+function displayFeedback() {
+  feedbackDiv.removeAttribute('"hide"');  // Displays feedback div
+  feedbackDiv.setAttribute("class", "feedback start");
+
+  var feedbackTime = 2;  // Length of time feedback displays
+  var feedbackTimeInterval = setInterval(function () {  // Hides feedback div after 2 seconds
+    feedbackTime--; 
+    if (feedbackTime < 1) {  
+      feedbackDiv.removeAttribute('"start"'); 
+      feedbackDiv.setAttribute("class", "feedback hide");
+      clearInterval(feedbackTimeInterval);
+    };
+  }, 1000);
+};
 
 // TODO function - display end screen with score (time left) and input initials
 function displayEndScreen() {
