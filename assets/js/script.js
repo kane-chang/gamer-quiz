@@ -1,10 +1,20 @@
-// TODO quiz questions:
-
-// variables referencing html selectors
+// TODO variables and quiz questions:
+// Created variables referencing html selectors
 var startScreen = document.querySelector("#start-screen");
 var questionDiv = document.querySelector("#questions");
 var questionTitle = document.querySelector("#question-title");
 var choicesList = document.querySelector("#choices");
+var endScreen = document.querySelector("#end-screen");
+var finalScore = document.querySelector("#final-score");
+var timeEl = document.querySelector('#time');
+var startButton = document.querySelector("#start");
+
+var feedbackDiv = document.querySelector("#feedback")
+var feedbackText = document.createElement("p")
+feedbackDiv.appendChild(feedbackText)
+
+var correctAudio = new Audio("assets/sfx/correct.wav")
+var incorrectAudio = new Audio("assets/sfx/incorrect.wav")
 
 // quiz questions and answers
 var questionArr = ["What was Mario's original name?",
@@ -30,74 +40,103 @@ var correctAnswerArr = [
   "Thor"
 ];
 
+// Variables for quiz functionality
+var questionNumTracker = 0;  // Keeps track of which question number user is currently on
+var timeLeft = 60;  // Total time left, starting from 60 seconds
 
-var questionNumTracker = 0;
-
-
+// TODO function - to display questions and answer options
 function displayQuestion() {
-  questionTitle.textContent = questionArr[questionNumTracker]; // Set question title
+  questionTitle.textContent = questionArr[questionNumTracker];  // Set question title in html
 
-  // while (choicesList.firstChild) {
-  //   choicesList.removeChild(choicesList.firstChild);
-  // }
+  while (choicesList.firstChild) {  // Remove previous answer options, if any
+    choicesList.removeChild(choicesList.firstChild);
+  };
 
-  for (let j = 0; j < 4; j++) {
+  for (let j = 0; j < 4; j++) {  // Create buttons for answer options for each question
     var choiceEl = document.createElement("button");
     choiceEl.textContent = answerArr[questionNumTracker][j];
     choicesList.appendChild(choiceEl);
   };
 
-
-  startScreen.removeAttribute('class:"start"');
+  startScreen.removeAttribute('class:"start"');  // Hides start screen
   startScreen.setAttribute("class", "hide");
 
-  questionDiv.removeAttribute('class:"hide"');
+  questionDiv.removeAttribute('class:"hide"');  // Displays questions screen
   questionDiv.setAttribute("class", "start");
-
-
-
-  questionNumTracker += 1;
-
 };
 
 
-  // questionTitle.textContent = questionList.questionOne.title
-  // for (let i = 0; i < questionList.questionOne.choices.length; i++) {
-  //   var choiceEl = document.createElement("button")
-  //   choiceEl.textContent = questionList.questionOne.choices[i]
-  //   choicesList.appendChild(choiceEl)
-  // }
-
-
-// TODO make a timer that countdowns when start quiz button is clicked
-
-var timeEl = document.getElementById('time')
-
+// TODO function - timer that countdowns when start quiz button is clicked
 function countdown() {
-  var timeLeft = 60;
-
   var timeInterval = setInterval(function () {
-    timeEl.textContent = timeLeft
-    timeLeft--;
-    if (timeLeft < 0) {
-      timeEl.textContent = "0"
-      clearInterval(timeInterval)
-      // trigger function to display end screen
-    }
+    timeEl.textContent = timeLeft  // Sets time element to reflect total time left
+    timeLeft--;  // Deducts 1 from total time left every 1000ms
+    if (timeLeft < 1 | questionNumTracker >= questionArr.length) {  // If time/questions run out, stops timer
+      timeEl.textContent = timeLeft;
+      clearInterval(timeInterval);
+      displayEndScreen();  // Triggers end screen
+    };
   }, 1000);
-}
+};
 
-// TODO add questions that display when quiz button is clicked
-var startButton = document.querySelector("#start")
-startButton.addEventListener("click", countdown)
-startButton.addEventListener("click", displayQuestion)
+// TODO function - to check correct answer - reduce timer if wrong
+function answerChecker(event) {
+  if (event.target.matches("button")) {  // Event delegation to only child button elements
+    selectedAnswer = event.target.textContent;  // Stores selected answer 
+    console.log(selectedAnswer);
+    console.log(correctAnswerArr[questionNumTracker]);
+    
+    if (selectedAnswer == correctAnswerArr[questionNumTracker]) {  // Checks if selected answer is correct
+      correctAudio.play()
+      feedbackText.textContent = "Correct!"
+      console.log("yes!");
+    } else {  
+      incorrectAudio.play()
+      feedbackText.textContent = "Wrong!"
+      console.log("no!");
+      timeLeft -= 10  // Reduces time for wrong answer
+    };
+
+    displayFeedback(); // Tells user whether their answer was correct
+
+    questionNumTracker += 1;  // Moves tracker to next question
+    if (questionNumTracker < questionArr.length) {  // Checks for end of quiz
+      displayQuestion();
+    };
+  };
+};
 
 
+// TODO function - display feedback for a few seconds
+function displayFeedback() {
+  feedbackDiv.removeAttribute('"hide"');  // Displays feedback div
+  feedbackDiv.setAttribute("class", "feedback start");
 
-// TODO add clickable answers
+  var feedbackTime = 2;  // Length of time feedback displays
+  var feedbackTimeInterval = setInterval(function () {  // Hides feedback div after 2 seconds
+    feedbackTime--; 
+    if (feedbackTime < 1) {  
+      feedbackDiv.removeAttribute('"start"'); 
+      feedbackDiv.setAttribute("class", "feedback hide");
+      clearInterval(feedbackTimeInterval);
+    };
+  }, 1000);
+};
 
-// TODO function to check correct answer - reduce timer if wrong
+// TODO function - display end screen with score (time left) and input initials
+function displayEndScreen() {
+  console.log(timeLeft);
+  finalScore.textContent = timeLeft  // Updates final score with time left
 
-// TODO game ends when all questions answered / timer reach 0
+  questionDiv.removeAttribute('class:"start"');  // Hides questions
+  questionDiv.setAttribute("class", "hide");
 
-// TODO end screen with score (time left) and input initials
+  endScreen.removeAttribute('class:"hide"');  // Displays end screen
+  endScreen.setAttribute("class", "start");
+};
+
+
+// TODO event listeners - start button and answer buttons
+startButton.addEventListener("click", countdown);
+startButton.addEventListener("click", displayQuestion);
+choicesList.addEventListener("click", answerChecker);
