@@ -10,4 +10,4 @@ Here is a link to the deployed [gamer quiz](https://kane-chang.github.io/gamer-q
 
 Here is a preview screenshot of the gamer quiz - no cheating!
 
-![](https://i.gyazo.com/61a714b955cb17de28b1e77865120316.png)
+![](https://i.gyazo.com/d6c035d02bdf42661ed3a5a7c8bd4588.png)
